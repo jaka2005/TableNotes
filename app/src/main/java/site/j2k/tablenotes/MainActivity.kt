@@ -3,15 +3,15 @@ package site.j2k.tablenotes
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -44,14 +44,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ListItem(text: String) {
-    Row(modifier = Modifier.padding(all = 5.dp)) {
-        Surface(shape = MaterialTheme.shapes.medium, shadowElevation = 1.dp) {
-            Text(
-                text = text, maxLines = 1,
-                modifier = Modifier.padding(all = 4.dp),
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
+    Surface(
+        shape = MaterialTheme.shapes.medium,
+        shadowElevation = 1.dp,
+        modifier = Modifier
+            .padding(all = 5.dp)
+    ) {
+        Text(
+            text = text, maxLines = 1,
+            modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp),
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }
 
@@ -63,6 +66,7 @@ fun PreviewListItem() {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun Board(name: String, rows: List<String>) {
     Surface(
@@ -81,10 +85,8 @@ fun Board(name: String, rows: List<String>) {
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            LazyColumn {
-                items(rows) { content ->
-                    ListItem(content)
-                }
+            FlowRow(modifier= Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                rows.forEach { ListItem(it) }
             }
         }
     }
