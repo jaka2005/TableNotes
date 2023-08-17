@@ -10,15 +10,15 @@ import site.j2k.tablenotes.database.model.Item
 
 @Dao
 interface ItemDao {
-    @Query("SELECT * FROM item WHERE boardID = :boardID")
-    fun getAllByBoardID(boardID: Int): Flow<List<Item>>
+    @Query("SELECT * FROM item")
+    fun getAll(): Flow<List<Item>>
 
     @Update
-    suspend fun updateBoard(item: Item)
+    suspend fun update(item: Item)
 
     @Insert
-    suspend fun insert(item: Item)
+    fun insert(item: Item)
 
     @Delete
-    suspend fun delete(item: Item)
+    fun delete(item: Item)
 }

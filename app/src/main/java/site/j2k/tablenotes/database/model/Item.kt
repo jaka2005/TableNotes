@@ -18,7 +18,7 @@ import androidx.room.PrimaryKey
 )
 data class Item(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val id: Long? = null,
     val boardID: Long,
     val name: String
 )

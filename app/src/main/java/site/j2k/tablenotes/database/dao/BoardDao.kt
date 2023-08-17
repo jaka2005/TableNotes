@@ -13,8 +13,8 @@ interface BoardDao {
     fun getAll(): Flow<List<Board>>
 
     @Insert
-    suspend fun insert(board: Board)
+    fun insert(board: Board)
 
     @Delete
-    suspend fun delete(board: Board)
+    fun delete(board: Board)
 }

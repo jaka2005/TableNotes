@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "board")
 data class Board(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val id: Long? = null,
     val name: String
 )

@@ -15,29 +15,17 @@ import site.j2k.tablenotes.database.model.Item
         Item::class
     ]
 )
-abstract class BaseDatabase : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
     abstract val boardDao: BoardDao
     abstract val itemDao: ItemDao
 
     companion object {
-        fun createDatabase(context: Context): BaseDatabase {
+        fun createDatabase(context: Context): AppDatabase {
             return Room.databaseBuilder(
                 context,
-                BaseDatabase::class.java,
+                AppDatabase::class.java,
                 "database.db"
             ).allowMainThreadQueries().build()
         }
-    }
-}
-
-object AppDatabase {
-    private lateinit var applicationContext: Context
-
-    fun init(context: Context) {
-        applicationContext = context
-    }
-
-    private val db: BaseDatabase by lazy {
-        BaseDatabase.createDatabase(applicationContext)
     }
 }
