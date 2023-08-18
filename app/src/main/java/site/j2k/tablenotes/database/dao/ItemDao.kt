@@ -14,7 +14,7 @@ interface ItemDao {
     fun getAll(): Flow<List<Item>>
 
     @Update
-    suspend fun update(item: Item)
+    fun update(item: Item)
 
     @Insert
     fun insert(item: Item)
