@@ -17,23 +17,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import site.j2k.tablenotes.bottomBorder
-import site.j2k.tablenotes.testListItems
+import site.j2k.tablenotes.database.model.Board
+import site.j2k.tablenotes.viewmodel.MainViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun Board(name: String, rows: List<String>) {
+fun Board(board: Board, mainViewModel: MainViewModel = viewModel()) {
     Surface(
         shape = MaterialTheme.shapes.large,
         shadowElevation = 2.5.dp,
@@ -41,7 +37,7 @@ fun Board(name: String, rows: List<String>) {
     ) {
         Column {
             Text(
-                text = name, textAlign = TextAlign.Center,
+                text = board.name, textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -50,12 +46,10 @@ fun Board(name: String, rows: List<String>) {
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            var text by remember { mutableStateOf(TextFieldValue("+")) }
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                rows.forEach { ListItem(it) }
 
 
                 Surface(
@@ -67,17 +61,14 @@ fun Board(name: String, rows: List<String>) {
                         .clickable { },
                 ) {
                     BasicTextField(
-                        value = text,
+                        value = mainViewModel.itemNameFieldText.value,
                         singleLine = true,
                         modifier = Modifier
                             .padding(vertical = 4.dp, horizontal = 6.dp)
                             .width(IntrinsicSize.Min)
                             .onFocusChanged {
-                                text = if (it.isFocused) {
-                                    TextFieldValue("")
-                                } else {
-                                    TextFieldValue("+")
-                                }
+                                mainViewModel.itemNameFieldText.value =
+                                    if (it.isFocused) "" else "+"
                             }
                             .onKeyEvent {
                                 if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -87,17 +78,11 @@ fun Board(name: String, rows: List<String>) {
                                 false
                             },
                         onValueChange = {
-                            text = it
+                            mainViewModel.itemNameFieldText.value = it
                         },
                     )
                 }
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewBoard() {
-    Board("Test Board", testListItems)
 }

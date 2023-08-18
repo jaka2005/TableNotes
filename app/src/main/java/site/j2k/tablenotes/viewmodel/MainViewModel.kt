@@ -17,8 +17,8 @@ class MainViewModel(private val db: AppDatabase) : ViewModel() {
 
     val items: Flow<List<Item>> = db.itemDao.getAll()
 
-    val boardNameFieldText = mutableStateOf("")
-    val itemNameFieldText = mutableStateOf("")
+    val boardNameFieldText = mutableStateOf("New Table")
+    val itemNameFieldText = mutableStateOf("+")
     val boardInFocus = mutableStateOf<Board?>(null)
 
     fun addNewBoard() {

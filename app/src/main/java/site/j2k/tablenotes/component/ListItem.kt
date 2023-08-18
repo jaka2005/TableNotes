@@ -6,12 +6,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import site.j2k.tablenotes.ui.theme.TableNotesTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import site.j2k.tablenotes.database.model.Item
+import site.j2k.tablenotes.viewmodel.MainViewModel
 
 @Composable
-fun ListItem(text: String) {
+fun ListItem(item: Item, mainViewModel: MainViewModel = viewModel()) {
     Surface(
         shape = MaterialTheme.shapes.medium,
         shadowElevation = 1.dp,
@@ -19,17 +20,9 @@ fun ListItem(text: String) {
             .padding(all = 5.dp)
     ) {
         Text(
-            text = text, maxLines = 1,
+            text = item.name, maxLines = 1,
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp),
             style = MaterialTheme.typography.bodyMedium
         )
-    }
-}
-
-@Preview
-@Composable
-fun PreviewListItem() {
-    TableNotesTheme {
-        ListItem(text = "Carrot")
     }
 }
