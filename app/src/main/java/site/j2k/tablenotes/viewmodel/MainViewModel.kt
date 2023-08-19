@@ -11,20 +11,21 @@ import site.j2k.tablenotes.database.AppDatabase
 import site.j2k.tablenotes.database.model.Board
 import site.j2k.tablenotes.database.model.Item
 
+const val DEFAULT_BOARD_NAME = "New Table"
 @Suppress("UNCHECKED_CAST")
 class MainViewModel(private val db: AppDatabase) : ViewModel() {
     val boards: Flow<List<Board>> = db.boardDao.getAll()
 
     val items: Flow<List<Item>> = db.itemDao.getAll()
 
-    val boardNameFieldText = mutableStateOf("New Table")
+    val boardNameFieldText = mutableStateOf(DEFAULT_BOARD_NAME)
     val itemNameFieldText = mutableStateOf("+")
     val boardInFocus = mutableStateOf<Board?>(null)
 
     fun addNewBoard() {
         if (boardNameFieldText.value.isBlank()) return
         db.boardDao.insert(Board(name = boardNameFieldText.value))
-        boardNameFieldText.value = ""
+        boardNameFieldText.value = DEFAULT_BOARD_NAME
     }
 
     fun deleteBoard(board: Board) {
@@ -34,11 +35,11 @@ class MainViewModel(private val db: AppDatabase) : ViewModel() {
     fun addNewItem() {
         if (boardInFocus.value == null || itemNameFieldText.value.isBlank()) return
         db.itemDao.insert(Item(boardID = boardInFocus.value?.id!!, name = itemNameFieldText.value))
-        itemNameFieldText.value = ""
+        itemNameFieldText.value = "+"
     }
 
     fun deleteItem(item: Item) {
-        db.itemDao
+        db.itemDao.delete(item)
     }
 
     companion object {

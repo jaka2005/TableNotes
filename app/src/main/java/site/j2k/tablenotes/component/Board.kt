@@ -1,6 +1,6 @@
 package site.j2k.tablenotes.component
 
-import android.view.KeyEvent
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,13 +13,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -27,9 +28,12 @@ import site.j2k.tablenotes.bottomBorder
 import site.j2k.tablenotes.database.model.Board
 import site.j2k.tablenotes.viewmodel.MainViewModel
 
+@SuppressLint("FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun Board(board: Board, mainViewModel: MainViewModel = viewModel()) {
+    val items = mainViewModel.items.collectAsState(initial = emptyList())
+
     Surface(
         shape = MaterialTheme.shapes.large,
         shadowElevation = 2.5.dp,
@@ -50,7 +54,11 @@ fun Board(board: Board, mainViewModel: MainViewModel = viewModel()) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-
+                items.value.forEach {
+                    if (it.boardID == board.id) {
+                        ListItem(item = it)
+                    }
+                }
 
                 Surface(
                     shape = MaterialTheme.shapes.medium,
@@ -61,22 +69,27 @@ fun Board(board: Board, mainViewModel: MainViewModel = viewModel()) {
                         .clickable { },
                 ) {
                     BasicTextField(
-                        value = mainViewModel.itemNameFieldText.value,
+                        value =
+                            if (board == mainViewModel.boardInFocus.value)
+                                mainViewModel.itemNameFieldText.value
+                            else "+",
                         singleLine = true,
                         modifier = Modifier
                             .padding(vertical = 4.dp, horizontal = 6.dp)
                             .width(IntrinsicSize.Min)
                             .onFocusChanged {
-                                mainViewModel.itemNameFieldText.value =
-                                    if (it.isFocused) "" else "+"
-                            }
-                            .onKeyEvent {
-                                if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
-//                                    TODO("Not yet implemented")
-                                    true
+                                if (it.isFocused) {
+                                    mainViewModel.boardInFocus.value = board
+                                } else {
+                                    if (board == mainViewModel.boardInFocus.value) {
+                                        mainViewModel.boardInFocus.value = null
+                                        mainViewModel.itemNameFieldText.value = ""
+                                    }
                                 }
-                                false
                             },
+                        keyboardActions = KeyboardActions {
+                            mainViewModel.addNewItem()
+                        },
                         onValueChange = {
                             mainViewModel.itemNameFieldText.value = it
                         },

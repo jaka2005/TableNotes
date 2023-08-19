@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -49,6 +50,9 @@ fun MainScreen(
                     singleLine = true,
                     onValueChange = {
                         mainViewModel.boardNameFieldText.value = it
+                    },
+                    keyboardActions = KeyboardActions {
+                        mainViewModel.addNewBoard()
                     }
                 )
             }
